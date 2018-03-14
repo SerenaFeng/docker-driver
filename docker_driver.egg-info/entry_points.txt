@@ -1,6 +1,0 @@
-[console_scripts]
-ddr = docker_driver.shell:main
-
-[ddr]
-testcase show = docker_driver.cli.testcase:TestCaseShow
-

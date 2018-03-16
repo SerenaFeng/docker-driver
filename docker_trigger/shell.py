@@ -8,7 +8,7 @@ class DockerDriverShell(app.App):
 
     def __init__(self):
         super(DockerDriverShell, self).__init__(
-            description='docker-driver cli',
+            description='docker-trigger cli',
             version='0.1',
             command_manager=commandmanager.CommandManager('ddr'),
             deferred_help=True,

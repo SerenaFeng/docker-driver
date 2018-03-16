@@ -8,11 +8,11 @@ testcase:
     image: opnfv/functest-smoke:euphrates
     opts: '-id --privileged=true'
     volumes:
-      - '/Users/serena/github/docker-driver/etc/envs/env_config.sh:/home/opnfv/functest/conf/openstack.creds'
-      - '/Users/serena/github/docker-driver/etc/images:/home/opnfv/functest/images'
+      - '/Users/serena/github/docker-trigger/etc/envs/env_config.sh:/home/opnfv/functest/conf/openstack.creds'
+      - '/Users/serena/github/docker-trigger/etc/images:/home/opnfv/functest/images'
     entry: '/bin/bash'
     pres:
-      - shell: 'cp /Users/serena/github/docker-driver/etc/testconf/testcases.yaml /usr/lib/python2.7/site-packages/functest/ci/testcases.yaml'
+      - shell: 'cp /Users/serena/github/docker-trigger/etc/testconf/testcases.yaml /usr/lib/python2.7/site-packages/functest/ci/testcases.yaml'
     triggers:
       - 'functest env prepare'
       - 'functest testcase run vping_userdata -r'

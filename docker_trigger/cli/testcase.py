@@ -1,13 +1,13 @@
 import os
 
-from docker_driver import cli
-from docker_driver.common import constants
+from docker_trigger import cli
+from docker_trigger import constants
+from docker_trigger import parser
+from docker_trigger import trigger
 
 
 def get_testcase_path(name):
-    return os.path.join(
-        constants.TESTCASE_PATH,
-        "%s.yml" % (name[9:] if name.startswith('dovetail.') else name))
+    return os.path.join(constants.TESTDEF_PATH, '{}.yaml'.format(name))
 
 
 class TestCaseList(cli.Command):
@@ -20,7 +20,7 @@ class TestCaseList(cli.Command):
 
     def take_action(self, parsed_args):
         family = parsed_args.family
-        for _, _, files in os.walk(constants.TESTCASE_PATH):
+        for _, _, files in os.walk(constants.TESTDEF_PATH):
             for file in files:
                 if not family or file.startswith(family):
                     print file
@@ -50,15 +50,18 @@ class TestCaseShow(cli.Command):
 class TestCaseRun(cli.Command):
     def get_parser(self, prog_name):
         parser = super(TestCaseRun, self).get_parser(prog_name)
-        parser.add_argument('testcase',
-                            metavar='<testcase>',
+        parser.add_argument('name',
+                            metavar='<name>',
                             help='Search test case using name')
         return parser
 
     def take_action(self, parsed_args):
-        testcase = parsed_args.testcase
-        testcase_path = get_testcase_path(testcase)
-        if os.path.isfile(testcase_path):
-            print 'run testcase {}'.format(testcase)
+        name = parsed_args.name
+        _path = get_testcase_path(name)
+        if os.path.isfile(_path):
+            print 'run testcase {}'.format(_path)
+            testcase = parser.YamlParser(_path).get_testcase()
+            # print testcase
+            trigger.Trigger(testcase).run()
         else:
-            print 'testcase {} not supported'.format(testcase)
+            print 'testcase {} not supported'.format(_path)

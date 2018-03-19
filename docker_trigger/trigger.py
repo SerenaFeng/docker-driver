@@ -1,5 +1,4 @@
 import docker
-import os
 
 
 class Trigger(object):
@@ -11,16 +10,16 @@ class Trigger(object):
         pass
 
     def run(self):
-        opts = self.get_property('opts')
-        volumes = self.get_property('volumes')
-        volumes = ' -v '.join(self.get_property('volumes'))
         image = self.get_property('image')
         entry = self.get_property('entry')
         if not image:
             raise Exception('image is not provided')
-
-        cmd = 'sudo docker run {opts} -v {volumes} {image} {entry}'.format(**locals())
-        os.system(cmd)
+        print self.client.containers.run(image,
+                                         command=entry,
+                                         privileged=True,
+                                         tty=True,
+                                         detach=True,
+                                         volumes=self._dict_volumes())
 
     def posts(self):
         pass
@@ -31,3 +30,11 @@ class Trigger(object):
         trigger = tc.get(trigger_type)
         value = trigger.get(property, '')
         return value
+
+    def _dict_volumes(self):
+        return {
+            v.split(':')[0]: {
+                'bind': v.split(':')[1],
+                'mode': 'rw'
+            } for v in (self.get_property('volumes'))
+        }

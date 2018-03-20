@@ -4,3 +4,5 @@ testsuite:
   objective: compliance test suite for the 2nd OVP launch
   testcases:
     - vping.tc001
+  publishers:
+    -

@@ -4,7 +4,7 @@ import logging
 from docker_trigger import constants
 from docker_trigger import parser
 from docker_trigger import trigger
-
+from docker_trigger.publish import functest
 
 LOG = logging.getLogger(__file__)
 
@@ -14,24 +14,24 @@ def get_file(name):
 
 
 class TestCase(object):
-    def __init__(self, name):
-        self.name = name
-        self.file = get_file(name)
-        self.testcase = None
+    def __init__(self, name, publish=False):
+        self.__name = name
+        self.__publish = publish
+        self.__file = get_file(name)
+        self.__testcase = None
 
     def run(self):
-        if not os.path.isfile(self.file):
-            LOG.error('testcase {} not supported'.format(self.file))
+        if not os.path.isfile(self.__file):
+            LOG.error('testcase {} not supported'.format(self.__file))
             return
 
-        LOG.info('run testcase {}'.format(self.file))
-        self.testcase = parser.YamlParser(self.file).data.get('testcase')
+        LOG.info('run testcase {}'.format(self.__file))
+        self.__testcase = parser.YamlParser(self.__file).data.get('testcase')
         self.testing()
-        self.post()
 
     def testing(self):
-        trigger.Trigger(self.testcase.get('trigger')).run()
+        trigger.Trigger(self.__testcase.get('trigger')).run()
 
-    def post(self):
-        for pos in self.testcase.get('posts', []):
-            os.system(pos)
+    def publish(self):
+        publisher = self.__testcase.get('publisher', [])
+        return getattr(functest, publisher)().parse()

@@ -24,15 +24,15 @@ class TestSuiteList(cli.Lister):
 class TestSuiteShow(cli.Show):
     def get_parser(self, prog_name):
         parser = super(TestSuiteShow, self).get_parser(prog_name)
-        parser.add_argument('testsuite',
-                            metavar='<testsuite>',
+        parser.add_argument('name',
+                            metavar='<name>',
                             help='Show test suite by name')
         return parser
 
     def take_action(self, parsed_args):
-        testcase = parsed_args.testsuite
+        testsuite = parsed_args.name
         self.get_file = ts.get_file
-        self.read_file(testcase)
+        self.read_file(testsuite)
 
 
 class TestSuiteRun(cli.Command):
@@ -41,7 +41,18 @@ class TestSuiteRun(cli.Command):
         parser.add_argument('name',
                             metavar='<name>',
                             help='Run test suite by name')
+        parser.add_argument('-p', '--publish',
+                            action='store_true',
+                            default=False,
+                            help='whether to publish the results or not')
+        parser.add_argument('-sut', '--sut',
+                            action='store_true',
+                            default=False,
+                            help='whether to publish the results or not')
         return parser
 
     def take_action(self, parsed_args):
-        ts.TestSuite(parsed_args.name).run()
+        if parsed_args.sut:
+            print 'get sut information'
+
+        ts.TestSuite(parsed_args.name, parsed_args.publish).run()

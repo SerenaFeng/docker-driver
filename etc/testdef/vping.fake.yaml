@@ -14,11 +14,9 @@ testcase:
       - '/Users/serena/github/docker-trigger/etc:/home/opnfv/dovetail'
     entry: '/bin/bash'
     pres:
-      - "cp -f /home/opnfv/dovetail/testconf/testcases.yaml /usr/lib/python2.7/site-packages/functest/ci/testcases.yaml"
+      - "echo pres"
     triggers:
-      - 'functest env prepare'
-      - 'functest testcase run vping_userdata -r'
+      - 'bash /home/opnfv/dovetail/testdef/fake_vping.sh'
     posts:
-      - 'mv -f /home/opnfv/functest/results/functest.log /home/opnfv/functest/results/vping.tc001.log'
-  publishers:
-    -
+      - 'echo posts'
+  publisher: 'Publish'

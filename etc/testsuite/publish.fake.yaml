@@ -1,0 +1,8 @@
+---
+testsuite:
+  name: publish
+  objective: test publish functionality
+  testcases:
+    - vping.fake
+  publishers:
+    -

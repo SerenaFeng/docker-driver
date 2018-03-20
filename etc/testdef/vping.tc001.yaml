@@ -4,20 +4,22 @@ testcase:
   alias: functest.vping_userdata
   trigger-type: docker
   objective: testing vping using userdata
-  docker:
+  trigger:
     image: opnfv/functest-smoke:euphrates
     opts: '-id --privileged=true'
     volumes:
       - '/Users/serena/github/docker-trigger/etc/envs/env_config.sh:/home/opnfv/functest/conf/openstack.creds'
       - '/Users/serena/github/docker-trigger/etc/images:/home/opnfv/functest/images'
+      - '/Users/serena/github/docker-trigger/etc/results:/home/opnfv/functest/results'
+      - '/Users/serena/github/docker-trigger/etc:/home/opnfv/dovetail'
     entry: '/bin/bash'
     pres:
-      - shell: 'cp /Users/serena/github/docker-trigger/etc/testconf/testcases.yaml /usr/lib/python2.7/site-packages/functest/ci/testcases.yaml'
+      - "cp -f /home/opnfv/dovetail/testconf/testcases.yaml /usr/lib/python2.7/site-packages/functest/ci/testcases.yaml"
     triggers:
       - 'functest env prepare'
       - 'functest testcase run vping_userdata -r'
     posts:
-      - shell: 'echo vping test finish!'
+      - 'mv -f /home/opnfv/functest/results/functest.log /home/opnfv/functest/results/dovetail.vping.tc001.log'
 
 #  builder:
 #    - name: functest-docker

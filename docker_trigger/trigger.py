@@ -1,4 +1,8 @@
+import logging
+
 import docker
+
+LOG = logging.getLogger(__file__)
 
 
 class Trigger(object):
@@ -6,29 +10,47 @@ class Trigger(object):
         self.testcase = testcase
         self.client = docker.from_env()
 
-    def prepares(self):
-        pass
-
     def run(self):
-        image = self.get_property('image')
-        entry = self.get_property('entry')
+        self.create()
+        self.prepare()
+        self.testing()
+        self.post()
+
+    def prepare(self):
+        for pre in self._get_trigger_property('pres'):
+            LOG.info('begin to prepare: {}'.format(pre))
+            self._exec_run(pre)
+
+    def create(self):
+        image = self._get_trigger_property('image')
+        entry = self._get_trigger_property('entry')
         if not image:
             raise Exception('image is not provided')
-        print self.client.containers.run(image,
-                                         command=entry,
-                                         privileged=True,
-                                         tty=True,
-                                         detach=True,
-                                         volumes=self._dict_volumes())
+        self.container = self.client.containers.run(
+            image,
+            command=entry,
+            privileged=True,
+            tty=True,
+            detach=True,
+            volumes=self._dict_volumes())
 
-    def posts(self):
-        pass
+    def testing(self):
+        for cmd in self._get_trigger_property('triggers'):
+            LOG.info('begin to execute: {}'.format(cmd))
+            self._exec_run(cmd)
 
-    def get_property(self, property):
-        tc = self.testcase.get('testcase')
-        trigger_type = tc.get('trigger-type')
-        trigger = tc.get(trigger_type)
-        value = trigger.get(property, '')
+    def post(self):
+        for pos in self._get_trigger_property('posts'):
+            LOG.info('begin to post: {}'.format(pos))
+            self._exec_run(pos)
+
+    def _exec_run(self, cmd):
+        (exec_code, output) = self.container.exec_run(cmd)
+        if exec_code:
+            raise Exception('Failed with: \n{}'.format(output))
+
+    def _get_trigger_property(self, property):
+        value = self.testcase.get('testcase').get('trigger').get(property, None)
         return value
 
     def _dict_volumes(self):
@@ -36,5 +58,5 @@ class Trigger(object):
             v.split(':')[0]: {
                 'bind': v.split(':')[1],
                 'mode': 'rw'
-            } for v in (self.get_property('volumes'))
+            } for v in (self._get_trigger_property('volumes'))
         }

@@ -1,6 +1,6 @@
 ---
 testcase:
-  name: dovetail.vping.tc001
+  name: vping.tc001
   alias: functest.vping_userdata
   trigger-type: docker
   objective: testing vping using userdata
@@ -19,7 +19,7 @@ testcase:
       - 'functest env prepare'
       - 'functest testcase run vping_userdata -r'
     posts:
-      - 'mv -f /home/opnfv/functest/results/functest.log /home/opnfv/functest/results/dovetail.vping.tc001.log'
+      - 'mv -f /home/opnfv/functest/results/functest.log /home/opnfv/functest/results/vping.tc001.log'
 
 #  builder:
 #    - name: functest-docker

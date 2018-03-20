@@ -1,32 +1,26 @@
 import os
 
+import yaml
+
 from docker_trigger import cli
 from docker_trigger import constants
-from docker_trigger import parser
-from docker_trigger import trigger
+from docker_trigger import testcase as tc
 
 
-def get_testcase_path(name):
-    return os.path.join(constants.TESTDEF_PATH, '{}.yaml'.format(name))
-
-
-class TestCaseList(cli.Command):
-    def get_parser(self, prog_name):
-        parser = super(TestCaseList, self).get_parser(prog_name)
-        parser.add_argument('-family',
-                            default = '',
-                            help='Search test case using name')
-        return parser
-
+class TestCaseList(cli.Lister):
     def take_action(self, parsed_args):
-        family = parsed_args.family
-        for _, _, files in os.walk(constants.TESTDEF_PATH):
+        cases = []
+        for root, _, files in os.walk(constants.TESTDEF_PATH):
             for file in files:
-                if not family or file.startswith(family):
-                    print file
+                with open(os.path.join(root, file), 'r') as fd:
+                    content = yaml.safe_load(fd)
+                    if content.has_key('testcase'):
+                        cases.append(content.get('testcase'))
+        columns = ['name', 'objective']
+        return self.format_output(columns, cases)
 
 
-class TestCaseShow(cli.Command):
+class TestCaseShow(cli.Show):
     def get_parser(self, prog_name):
         parser = super(TestCaseShow, self).get_parser(prog_name)
         parser.add_argument('testcase',
@@ -36,15 +30,8 @@ class TestCaseShow(cli.Command):
 
     def take_action(self, parsed_args):
         testcase = parsed_args.testcase
-        testcase_file = get_testcase_path(testcase)
-        if os.path.isfile(testcase_file):
-            with open(testcase_file, 'r') as tc_file:
-                try:
-                    print tc_file.read()
-                except Exception as exc:
-                    print exc
-        else:
-            self.log.error('testcase {} not supported'.format(testcase))
+        self.get_file = tc.get_file
+        self.read_file(testcase)
 
 
 class TestCaseRun(cli.Command):
@@ -57,11 +44,5 @@ class TestCaseRun(cli.Command):
 
     def take_action(self, parsed_args):
         name = parsed_args.name
-        _path = get_testcase_path(name)
-        if os.path.isfile(_path):
-            print 'run testcase {}'.format(_path)
-            testcase = parser.YamlParser(_path).get_testcase()
-            # print testcase
-            trigger.Trigger(testcase).run()
-        else:
-            print 'testcase {} not supported'.format(_path)
+        self.log.info('begin to run testcase {}'.format(name))
+        tc.TestCase(name).run()

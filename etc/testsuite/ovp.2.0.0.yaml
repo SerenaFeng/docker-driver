@@ -1,0 +1,6 @@
+---
+testsuite:
+  name: ovp.2.0.0
+  objective: compliance test suite for the 2nd OVP launch
+  testcases:
+    - vping.tc001

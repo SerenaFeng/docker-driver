@@ -6,8 +6,8 @@ LOG = logging.getLogger(__file__)
 
 
 class Trigger(object):
-    def __init__(self, testcase):
-        self.testcase = testcase
+    def __init__(self, trigger_conf):
+        self.trigger_conf = trigger_conf
         self.client = docker.from_env()
 
     def run(self):
@@ -50,7 +50,7 @@ class Trigger(object):
             raise Exception('Failed with: \n{}'.format(output))
 
     def _get_trigger_property(self, property):
-        value = self.testcase.get('testcase').get('trigger').get(property, None)
+        value = self.trigger_conf.get(property, None)
         return value
 
     def _dict_volumes(self):

@@ -8,10 +8,8 @@ class YamlParser(object):
         self.data = {}
         self.testcases = []
         self.path = path
+        self.load_files()
 
     def load_files(self):
-        pass
-
-    def get_testcase(self):
         with open(self.path, 'r') as fd:
-            return yaml.safe_load(fd)
+            self.data = yaml.safe_load(fd)

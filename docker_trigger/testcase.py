@@ -4,7 +4,7 @@ import logging
 from docker_trigger import constants
 from docker_trigger import parser
 from docker_trigger import trigger
-from docker_trigger.publish import functest
+from docker_trigger.publishers import functest
 
 LOG = logging.getLogger(__file__)
 

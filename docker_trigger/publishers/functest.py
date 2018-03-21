@@ -1,53 +1,36 @@
-import os.path
-from datetime import datetime
-
-import logging
 import json
+import logging
+import os.path
+
 from docker_trigger import constants
+from docker_trigger import publishers
+
+LOG = logging.getLogger(__file__)
 
 
-class Publish(object):
-    def __init__(self):
-        self.file = os.path.join(constants.RESULTS_PATH, 'result.json')
-        self.logger = logging.getLogger(__file__)
+class Simple(object):
+    def __init__(self, runner, result_file=None):
+        self.runner = runner
+        self.result_file = result_file
+            #if file else os.path.join(constants.RESULTS_PATH, 'result.json')
 
     def parse(self):
-        with open(self.file, 'r') as f:
+        with open(self.result_file, 'r') as f:
             try:
                 data = json.loads(f.read())
             except Exception as exc:
-                self.logger.error('load result failed: {}'.format(exc))
+                LOG.error('load result failed: {}'.format(exc))
                 return None
-
             try:
-                criteria = data['criteria']
-                timestart = data['start_date']
-                timestop = data['stop_date']
-                details = data['details']
-                duration = self.get_duration(timestart, timestop)
-            except KeyError as e:
-                self.logger.error("Result data don't have key {}.".format(e))
-                return None
+                start = data['start_date']
+                stop = data['stop_date']
+                return {
+                    'criteria': data['criteria'],
+                    'timestart': start,
+                    'timestop': stop,
+                    'duration': publishers.get_duration(start, stop),
+                    'details': data['details']
+                }
             except Exception as exc:
-                self.logger.error("parse result failed: {}.".format(exc))
+                LOG.error("parse result failed: {}.".format(exc))
                 return None
-
-            return {
-                'criteria': criteria,
-                'timestart': timestart,
-                'timestop': timestop,
-                'duration': duration,
-                'details': details
-            }
-
-    def get_duration(self, start_date, stop_date):
-        fmt = '%Y-%m-%d %H:%M:%S'
-        try:
-            datetime_start = datetime.strptime(start_date, fmt)
-            datetime_stop = datetime.strptime(stop_date, fmt)
-            delta = (datetime_stop - datetime_start).seconds
-            res = "%sm%ss" % (delta / 60, delta % 60)
-            return res
-        except ValueError as e:
-            self.logger.exception("ValueError: {}".format(e))
-            return None

@@ -19,4 +19,7 @@ testcase:
       - 'bash /home/opnfv/dovetail/testdef/fake_vping.sh'
     posts:
       - 'echo posts'
-  publisher: 'Publish'
+  publisher:
+    parser: 'docker_trigger.publishers.functest:Simple'
+    args:
+      result_file: '/Users/serena/github/docker-trigger/etc/results/result.json'

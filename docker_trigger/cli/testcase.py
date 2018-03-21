@@ -5,6 +5,7 @@ import yaml
 from docker_trigger import cli
 from docker_trigger import constants
 from docker_trigger import testcase as tc
+from docker_trigger import parser
 
 
 class TestCaseList(cli.Lister):
@@ -14,8 +15,11 @@ class TestCaseList(cli.Lister):
             for file in files:
                 with open(os.path.join(root, file), 'r') as fd:
                     content = yaml.safe_load(fd)
-                    if content.has_key('testcase'):
-                        cases.append(content.get('testcase'))
+                    try:
+                        if content.has_key('testcase'):
+                            cases.append(content.get('testcase'))
+                    except:
+                        pass
         columns = ['name', 'objective']
         return self.format_output(columns, cases)
 
@@ -32,6 +36,9 @@ class TestCaseShow(cli.Show):
         testcase = parsed_args.testcase
         self.get_file = tc.get_file
         self.read_file(testcase)
+        # yaml_parser = parser.YamlParser(constants.TESTDEF_PATH)
+        # yaml_parser.load_files(tc.get_file(testcase))
+        # print yaml_parser.data
 
 
 class TestCaseRun(cli.Command):

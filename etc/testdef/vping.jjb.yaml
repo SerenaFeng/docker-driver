@@ -1,0 +1,15 @@
+---
+- testcase:
+    name: vping.jjb
+    alias: functest.vping_userdata
+    trigger-type: docker
+    objective: testing jjb project management
+    parameters:
+      - dovetail-conf-parameter
+      - dovetail-home-parameter
+    trigger:
+      - functest-trigger:
+        image: opnfv/functest-smoke:euphrates
+        trigger: bash $CONF_PATH/fake_vping.sh
+    publisher:
+      - functest-publisher-simple

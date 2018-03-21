@@ -1,25 +1,25 @@
 ---
 testcase:
-  name: vping.tc001
-  alias: functest.vping_userdata
-  trigger-type: docker
-  objective: testing vping using userdata
-  trigger:
-    image: opnfv/functest-smoke:euphrates
-    opts: '-id --privileged=true'
-    volumes:
-      - '/Users/serena/github/docker-trigger/etc/envs/env_config.sh:/home/opnfv/functest/conf/openstack.creds'
-      - '/Users/serena/github/docker-trigger/etc/images:/home/opnfv/functest/images'
-      - '/Users/serena/github/docker-trigger/etc/results:/home/opnfv/functest/results'
-      - '/Users/serena/github/docker-trigger/etc:/home/opnfv/dovetail'
-    entry: '/bin/bash'
-    pres:
-      - "echo pres"
-    triggers:
-      - 'bash /home/opnfv/dovetail/testdef/fake_vping.sh'
-    posts:
-      - 'echo posts'
-  publisher:
-    parser: 'docker_trigger.publishers.functest:Simple'
-    args:
-      result_file: '/Users/serena/github/docker-trigger/etc/results/result.json'
+    name: vping.fake
+    alias: functest.vping_userdata
+    trigger-type: docker
+    objective: testing publish functionality
+    trigger:
+      image: opnfv/functest-smoke:euphrates
+      opts: '-id --privileged=true'
+      volumes:
+        - '/Users/serena/github/docker-trigger/etc/envs/env_config.sh:/home/opnfv/functest/conf/openstack.creds'
+        - '/Users/serena/github/docker-trigger/etc/images:/home/opnfv/functest/images'
+        - '/Users/serena/github/docker-trigger/etc/results:/home/opnfv/functest/results'
+        - '/Users/serena/github/docker-trigger/etc:/home/opnfv/dovetail'
+      entry: '/bin/bash'
+      pres:
+        - "echo pres"
+      triggers:
+        - 'bash /home/opnfv/dovetail/fake_vping.sh'
+      posts:
+        - 'echo posts'
+    publisher:
+      parser: 'docker_trigger.publishers.functest:Simple'
+      args:
+        result_file: '/Users/serena/github/docker-trigger/etc/results/result.json'

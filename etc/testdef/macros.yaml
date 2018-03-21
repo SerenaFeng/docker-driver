@@ -1,0 +1,66 @@
+---
+- parameter:
+    name: dovetail-conf-parameter
+    parameters:
+      - string:
+          name: CONF_PATH
+          default: '/Users/serena/github/docker-trigger/etc'
+          description: "dovetail configuration path"
+
+      - string:
+          name: TESTSUITE_PATH
+          default: '{CONF_PATH}/testsuite'
+          description: "dovetail configuration path"
+
+      - string:
+          name: TESTDEF_PATH
+          default: '{CONF_PATH}/testdef'
+          description: "dovetail configuration path"
+
+      - string:
+          name: TESTCONF_PATH
+          default: '{CONF_PATH}/testconf'
+          description: "dovetail configuration path"
+
+      - string:
+          name: TESTENV_PATH
+          default: '{CONF_PATH}/envs'
+          description: "dovetail configuration path"
+
+      - string:
+          name: TESTRESULTS_PATH
+          default: '{CONF_PATH}/results'
+          description: "dovetail configuration path"
+
+      - string:
+          name: TESTIMAGES_PATH
+          default: '{CONF_PATH}/images'
+          description: "dovetail configuration path"
+
+- parameter:
+    name: dovetail-home-parameter
+    parameters:
+      - string:
+          name: DOVETAIL_HOME
+          default: '/home/opnfv/dovetail'
+          description: "dovetail configuration path"
+
+      - string:
+          name: RESULTS_PATH
+          default: '{DOVETAIL_HOME}/results'
+          description: "dovetail configuration path"
+
+      - string:
+          name: IMAGES_PATH
+          default: '{DOVETAIL_HOME}/images'
+          description: "dovetail configuration path"
+
+      - string:
+          name: ENVS_PATH
+          default: '{DOVETAIL_HOME}/envs'
+          description: "dovetail configuration path"
+
+- volume:
+    name: dovetail-home-volume
+    volumes:
+      - '$CONF_PATH:$DOVETAIL_HOME'

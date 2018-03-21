@@ -1,0 +1,55 @@
+---
+
+- volume:
+    name: functest-images-volume
+    volumes:
+      - '$TESTIMAGES_PATH:$IMAGES_PATH'
+
+- volume:
+    name: functest-results-volume
+    volumes:
+      - '$TESTRESULTS_PATH:$RESULTS_PATH'
+
+- volume:
+    name: functest-creds-volume
+    volumes:
+      - '$TESTENVS_PATH/env_config.sh:/home/opnfv/functest/conf/openstack.creds'
+
+- pre:
+    name: functest-pres
+    pres:
+      - 'echo functest-pres'
+
+- post:
+    name: functest-posts
+    pres:
+      - 'echo functest-posts'
+
+- publisher:
+    name: functest-publisher-simple
+    publisher:
+      parser: 'docker_trigger.publishers.functest:Simple'
+      args:
+        result_file: '$TESTRESULTS_PATH/result.json'
+
+- trigger:
+    name: functest-trigger
+    trigger:
+      image: '{image}'
+      privileged: True
+      tty: True
+      detach: True
+      rm: True
+      volumes:
+        - functest-creds-volume
+        - functest-images-volume
+        - functest-results-volume
+        - dovetail-home-volume
+      entry: '/bin/bash'
+      pres:
+        - functest-pres
+      triggers:
+        - '{trigger}'
+      posts:
+        - functest-posts
+

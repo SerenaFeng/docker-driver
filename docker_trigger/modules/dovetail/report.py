@@ -10,7 +10,7 @@ class Reporter(object):
     def __init__(self, runner):
         self.runner = runner
 
-    def parse(self):
+    def work(self):
         report_data = self.generate_json()
         report_txt = ''
         report_txt += '\n\nDovetail Report\n'

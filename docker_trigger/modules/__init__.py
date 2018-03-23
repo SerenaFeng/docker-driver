@@ -1,24 +1,20 @@
-'''
-put all the publisers under this repo
-'''
 from datetime import datetime
 import importlib
 
 
-def publish(runner, publisher):
-    parser = publisher.get('parser')
+def run_module(runner, module):
+    parser = module.get('worker')
     if parser.count(':') != 1:
         return None
-    cls = load_publisher(publisher.get('parser'))
-    args = publisher.get('args')
+    cls = load_module(module.get('worker'))
+    args = module.get('args')
     clz = cls(runner, **args) if args else cls(runner)
-    return clz.parse()
+    return clz.work()
 
 
-def load_publisher(parser):
-    (modulename, clsname) = tuple(filter(None, parser.split(':')))
-    module = importlib.import_module(modulename)
-    return getattr(module, clsname)
+def load_module(module):
+    (modulename, clsname) = tuple(filter(None, module.split(':')))
+    return getattr(importlib.import_module(modulename), clsname)
 
 
 def get_duration(start_date, stop_date):

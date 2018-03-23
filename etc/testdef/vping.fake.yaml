@@ -4,6 +4,10 @@ testcase:
     alias: functest.vping_userdata
     trigger-type: docker
     objective: testing publish functionality
+    # preparation works run in dovetail
+    tc_prepare:
+      worker: 'docker_trigger.modules.functest.tc_prepare:Prepare'
+      args:
     trigger:
       image: opnfv/functest-smoke:euphrates
       opts: '-id --privileged=true'
@@ -13,13 +17,19 @@ testcase:
         - '/Users/serena/github/docker-trigger/etc/results:/home/opnfv/functest/results'
         - '/Users/serena/github/docker-trigger/etc:/home/opnfv/dovetail'
       entry: '/bin/bash'
-      pres:
-        - "echo pres"
+    # preparation works run in testing container, like functest/yardstick
+      trigger_prepare:
+        - 'echo trigger prepare'
       triggers:
         - 'bash /home/opnfv/dovetail/fake_vping.sh'
-      posts:
-        - 'echo posts'
+    # post works run in testing container, like functest/yardstick
+      trigger_post:
+        - 'echo trigger post'
+    # post works run in dovetail
+    tc_post:
+      worker: 'docker_trigger.modules.functest.tc_post:Post'
+      args:
     publisher:
-      parser: 'docker_trigger.publishers.functest:Simple'
+      worker: 'docker_trigger.modules.functest.publish:Simple'
       args:
         result_file: '/Users/serena/github/docker-trigger/etc/results/result.json'

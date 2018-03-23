@@ -5,7 +5,7 @@ import time
 from docker_trigger import constants
 from docker_trigger import parser
 from docker_trigger import testcase as tc
-from docker_trigger import publishers
+from docker_trigger import modules
 
 LOG = logging.getLogger(__file__)
 
@@ -49,9 +49,11 @@ class TestSuite(object):
                 testcase_runner.publish()
 
     def publish(self):
-        self.report = publishers.publish(self,
-                                         self.content.get('publisher', None))
-        print self.report
+        reporter = self.content.get('reporter', None)
+        if reporter:
+            LOG.info('begin to get report')
+            self.report = modules.run_module(self, reporter)
+            print self.report
 
     @property
     def testcases(self):

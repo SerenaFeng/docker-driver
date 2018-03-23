@@ -22,13 +22,13 @@ class YamlParser(object):
         self.data = {}
         self.testcases = []
         self.path = path
-        # self.load_files()
+        self.load_files()
 
-    # def load_files(self):
-    #     with open(self.path, 'r') as fd:
-    #         self.data = yaml.safe_load(fd)
+    def load_files(self):
+        with open(self.path, 'r') as fd:
+            self.data = yaml.safe_load(fd)
 
-    def load_files(self, fn):
+    def load_files_jjb(self, fn):
 
         # handle deprecated behavior, and check that it's not a file like
         # object as these may implement the '__iter__' attribute.

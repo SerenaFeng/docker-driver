@@ -17,7 +17,7 @@ class Trigger(object):
         self.post()
 
     def prepare(self):
-        for pre in self._get_trigger_property('pres'):
+        for pre in self._get_trigger_property('trigger_prepare'):
             LOG.info('begin to prepare: {}'.format(pre))
             self._exec_run(pre)
 
@@ -40,7 +40,7 @@ class Trigger(object):
             self._exec_run(cmd)
 
     def post(self):
-        for pos in self._get_trigger_property('posts'):
+        for pos in self._get_trigger_property('trigger_post'):
             LOG.info('begin to post: {}'.format(pos))
             self._exec_run(pos)
 

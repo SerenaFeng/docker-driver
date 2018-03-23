@@ -4,5 +4,5 @@ testsuite:
   objective: test publish functionality
   testcases:
     - vping.fake
-  publisher:
-    parser: 'docker_trigger.publishers.dovetail:Reporter'
+  reporter:
+    worker: 'docker_trigger.modules.dovetail.report:Reporter'

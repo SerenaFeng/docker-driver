@@ -30,7 +30,7 @@ class Reporter(object):
         testcase_num = {}
         testcase_passnum = {}
         tc_area = set((self.get_testcase_area(tc)
-                       for tc in self.runner.content.get('testcases')))
+                       for tc in self.runner.conf.get('testcases')))
 
         for area in tc_area:
             sub_report[area] = ''
@@ -108,7 +108,7 @@ class Reporter(object):
                 continue
 
             testcase_inreport['result'] = testcase_runner.result.get('criteria')
-            testcase_inreport['objective'] = testcase_runner.content.get('objective')
+            testcase_inreport['objective'] = testcase_runner.conf.get('objective')
             testcase_inreport['sub_testcase'] = []
             report_obj['testcases_list'].append(testcase_inreport)
         return report_obj

@@ -2,6 +2,8 @@ import functools
 import os.path
 import logging
 from docker_trigger import modules
+from docker_trigger import worker
+
 
 def file_check(message):
     def _check(run):
@@ -19,6 +21,12 @@ class Base(object):
         self.log = logging.getLogger(__file__)
         self.conf = None
         self.name = None
+
+    def run_tasks(self, field):
+        tasks = self.conf.get(field, None)
+        if tasks:
+            return worker.Tasks(self, tasks).walk()
+        return None
 
     def run_module(self, field):
         module = self.conf.get(field, None)

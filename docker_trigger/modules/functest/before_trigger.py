@@ -3,7 +3,7 @@ import logging
 LOG = logging.getLogger(__file__)
 
 
-class Prepare(object):
+class Before(object):
     def __init__(self, runner, **kwargs):
         self.runner = runner
 

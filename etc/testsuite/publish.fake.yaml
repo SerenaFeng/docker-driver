@@ -5,4 +5,5 @@ testsuite:
   testcases:
     - vping.fake
   reporter:
-    worker: 'docker_trigger.modules.dovetail.report:Reporter'
+    python:
+      worker: 'docker_trigger.modules.dovetail.report:Reporter'

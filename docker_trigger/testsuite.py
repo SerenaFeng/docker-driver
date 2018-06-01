@@ -45,7 +45,7 @@ class TestSuite(runbase.Base):
                 testcase_runner.publish()
 
     def publish(self):
-        self.report = self.run_module('reporter')
+        self.report = self.run_tasks('reporter')
         print self.report
 
     @property

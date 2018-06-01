@@ -5,9 +5,10 @@ testcase:
     trigger-type: docker
     objective: testing publish functionality
     # preparation works run in dovetail
-    tc_prepare:
-      worker: 'docker_trigger.modules.functest.tc_prepare:Prepare'
-      args:
+    before_trigger:
+      - python:
+          worker: 'docker_trigger.modules.functest.before_trigger:Before'
+          args:
     trigger:
       image: opnfv/functest-smoke:euphrates
       opts: '-id --privileged=true'
@@ -18,18 +19,20 @@ testcase:
         - '/Users/serena/github/docker-trigger/etc:/home/opnfv/dovetail'
       entry: '/bin/bash'
     # preparation works run in testing container, like functest/yardstick
-      trigger_prepare:
+      prepare:
         - 'echo trigger prepare'
-      triggers:
+      run:
         - 'bash /home/opnfv/dovetail/fake_vping.sh'
     # post works run in testing container, like functest/yardstick
-      trigger_post:
+      post:
         - 'echo trigger post'
     # post works run in dovetail
-    tc_post:
-      worker: 'docker_trigger.modules.functest.tc_post:Post'
-      args:
+    after_trigger:
+      - python:
+          worker: 'docker_trigger.modules.functest.after_trigger:After'
+          args:
     publisher:
-      worker: 'docker_trigger.modules.functest.publish:Simple'
-      args:
-        result_file: '/Users/serena/github/docker-trigger/etc/results/result.json'
+      python:
+        worker: 'docker_trigger.modules.functest.publish:Simple'
+        args:
+          result_file: '/Users/serena/github/docker-trigger/etc/results/result.json'

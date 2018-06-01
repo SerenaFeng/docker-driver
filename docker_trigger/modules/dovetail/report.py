@@ -88,6 +88,7 @@ class Reporter(object):
         report_obj = {}
         report_obj['version'] = \
             version.VersionInfo('dovetail').version_string()
+
         report_obj['testsuite'] = self.runner.name
         report_obj['dashboard'] = None
         report_obj['build_tag'] = self.runner.build_tag

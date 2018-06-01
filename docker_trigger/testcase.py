@@ -4,7 +4,7 @@ from docker_trigger import constants
 from docker_trigger import parser
 from docker_trigger import runbase
 from docker_trigger import trigger
-
+from docker_trigger import worker
 
 def get_file(name):
     return os.path.join(constants.TESTDEF_PATH, '{}.yaml'.format(name))
@@ -22,25 +22,18 @@ class TestCase(runbase.Base):
     def run(self):
         self.log.info('run testcase {}'.format(self._file))
         self.conf = parser.YamlParser(self._file).data.get('testcase')
-        self.prepare()
+        self.before()
         self.testing()
-        self.post()
+        self.after()
 
-    def prepare(self):
-        self.run_module('tc_prepare')
+    def before(self):
+        self.run_tasks('before_trigger')
 
     def testing(self):
         trigger.Trigger(self.conf.get('trigger')).run()
 
-    def post(self):
-        self.run_module('tc_post')
+    def after(self):
+        self.run_tasks('after_trigger')
 
     def publish(self):
-        self.result = self.run_module('publisher')
-
-    # def _run_module(self, field):
-    #     module = self.conf.get(field, None)
-    #     if module:
-    #         return modules.run_module(self, module)
-    #
-    #     return None
+        self.result = self.run_tasks('publisher')

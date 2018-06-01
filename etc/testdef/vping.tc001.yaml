@@ -13,12 +13,12 @@ testcase:
       - '/Users/serena/github/docker-trigger/etc/results:/home/opnfv/functest/results'
       - '/Users/serena/github/docker-trigger/etc:/home/opnfv/dovetail'
     entry: '/bin/bash'
-    pres:
+    prepare:
       - "cp -f /home/opnfv/dovetail/testconf/testcases.yaml /usr/lib/python2.7/site-packages/functest/ci/testcases.yaml"
     triggers:
       - 'functest env prepare'
       - 'functest testcase run vping_userdata -r'
-    posts:
+    post:
       - 'mv -f /home/opnfv/functest/results/functest.log /home/opnfv/functest/results/vping.tc001.log'
   publishers:
     -

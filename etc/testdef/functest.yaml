@@ -48,8 +48,8 @@
       entry: '/bin/bash'
       pres:
         - functest-pres
-      triggers:
+      run:
         - '{trigger}'
-      posts:
+      post:
         - functest-posts
 

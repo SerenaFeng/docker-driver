@@ -17,7 +17,7 @@ class Trigger(object):
         self.post()
 
     def prepare(self):
-        for pre in self._get_trigger_property('trigger_prepare'):
+        for pre in self._get_trigger_property('prepare'):
             LOG.info('begin to prepare: {}'.format(pre))
             self._exec_run(pre)
 
@@ -35,12 +35,12 @@ class Trigger(object):
             volumes=self._dict_volumes())
 
     def testing(self):
-        for cmd in self._get_trigger_property('triggers'):
+        for cmd in self._get_trigger_property('run'):
             LOG.info('begin to execute: {}'.format(cmd))
             self._exec_run(cmd)
 
     def post(self):
-        for pos in self._get_trigger_property('trigger_post'):
+        for pos in self._get_trigger_property('post'):
             LOG.info('begin to post: {}'.format(pos))
             self._exec_run(pos)
 
